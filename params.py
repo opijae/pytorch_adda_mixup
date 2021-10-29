@@ -5,7 +5,7 @@ data_root = "data"
 image_size = 28
 
 #restore
-model_root = 'generated\\models'
+model_root = './'
 
 
 # params for target dataset
@@ -13,10 +13,10 @@ model_root = 'generated\\models'
 
 #dataset root
 mnist_dataset_root = data_root
-mnist_m_dataset_root = data_root+'\\mnist_m'
-usps_dataset_root = data_root+'\\usps'
-svhn_dataset_root = data_root+'\\svhn'
-custom_dataset_root = data_root+'\\custom\\'
+mnist_m_dataset_root = './mnist_m'
+usps_dataset_root = data_root+'/usps'
+svhn_dataset_root = data_root+'/svhn'
+custom_dataset_root = data_root+'/custom/'
 
 # params for training network
 num_gpu = 1
@@ -35,8 +35,8 @@ d_output_dims = 2
 d_model_restore = 'generated\\models\\ADDA-critic-final.pt'
 
 ## sorce target
-src_dataset = 'custom'
-tgt_dataset = 'custom'
+src_dataset = 'mnist'
+tgt_dataset = 'mnist_m'
 
 
 # params for optimizing models
@@ -138,7 +138,7 @@ use_load = False
 train =False
 
 #ratio mix target
-lammax = 0.0
+lammax = 0.3
 lammin = 0.0
 
 

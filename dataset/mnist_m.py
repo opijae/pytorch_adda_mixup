@@ -66,23 +66,7 @@ def get_mnist_m(train,adp=False,size= 0 ):
         transform=pre_process)
         
     if train:
-        # perm = torch.randperm(len(dataset_target))
-        # indices = perm[:10000]
         dataset_target,_ = data_utils.random_split(dataset_target, [size,len(dataset_target)-size])
-        # size = len(dataset_target)
-        # train, valid = data_utils.random_split(dataset_target,[size-int(size*params.train_val_ratio),int(size*params.train_val_ratio)])        
-        # train_loader = torch.utils.data.DataLoader(
-        # dataset=train,
-        # batch_size= params.adp_batch_size if adp else params.batch_size,
-        # shuffle=True,
-        # drop_last=True)
-        # valid_loader = torch.utils.data.DataLoader(
-        # dataset=valid,
-        # batch_size= params.adp_batch_size if adp else params.batch_size,
-        # shuffle=True,
-        # drop_last=True)
-
-        # return train_loader,valid_loader
 
 
     dataloader  = torch.utils.data.DataLoader(

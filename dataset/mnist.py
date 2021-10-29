@@ -4,16 +4,20 @@ import torch
 from torchvision import datasets, transforms
 import torch.utils.data as data_utils
 
+
+from custom_aug import Synthetic
 import params
 
 
 def get_mnist(train,adp = False,size = 0):
     """Get MNIST dataset loader."""
     # image pre-processing
-    pre_process = transforms.Compose([transforms.Resize(params.image_size),
-                                      transforms.ToTensor(),
+    pre_process = transforms.Compose([
+        transforms.Resize(params.image_size),
+        Synthetic(),
+        transforms.ToTensor(),
 #    transforms.Normalize((0.5),(0.5)),
-           transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
+        #    transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
 
 
    ])
