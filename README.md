@@ -1,4 +1,5 @@
 # PyTorch-ADDA-mixup
+
 A PyTorch implementation added MIXUP for Adversarial Discriminative Domain Adaptation.
 
 Confirmed improved performance by mixing up target domian and source domain
@@ -21,5 +22,6 @@ python main.py
 ## Reference
 This repo is  based on https://github.com/corenel/pytorch-adda  , https://github.com/Fujiki-Nakamura/ADDA.PyTorch
 https://arxiv.org/abs/1702.05464  
+
 
 
