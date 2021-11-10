@@ -7,6 +7,7 @@ from utils import make_cuda, save_model, LabelSmoothingCrossEntropy,mixup_data
 from random import *
 import sys
 from tqdm import tqdm
+import time
 
 def train_src(model, source_data_loader, source_eval_data_loader=None):
     
@@ -40,9 +41,13 @@ def train_src(model, source_data_loader, source_eval_data_loader=None):
             # zero gradients for optimizer
             optimizer.zero_grad()
 
+            # print("load")
+            # s = time.time()
             # compute loss for critic
             outs = model(images)
             loss = criterion(outs, labels)
+            # print("load_done")
+            # print(time.time()-s)
 
             loss.backward()
             optimizer.step()
@@ -70,7 +75,7 @@ def train_src(model, source_data_loader, source_eval_data_loader=None):
         val_loss_value = eval(model, source_eval_data_loader)
         if val_acc > val_loss_value:
             val_acc = val_loss_value            
-            save_model(model, f"weights/{params.src_dataset}_pretrain_mnist_m_bg.pt")
+            save_model(model, f"weights/{params.src_dataset}_pretrain_mnist_m_bg_ver2.pt")
         print()
 
     return model

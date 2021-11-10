@@ -46,7 +46,7 @@ def get_usps(train,adp=False,size=0):
     usps_data_loader = torch.utils.data.DataLoader(
         dataset=usps_dataset,
         batch_size= params.adp_batch_size if adp else params.batch_size,
-
+        num_workers = 4,
         shuffle=True,
         drop_last=True)
     return usps_data_loader

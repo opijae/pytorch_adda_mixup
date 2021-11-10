@@ -30,7 +30,7 @@ class GetLoader(data.Dataset):
         img_paths, labels = self.img_paths[item], self.img_labels[item]
         imgs = Image.open(os.path.join(self.root, img_paths)).convert('RGB')
 
-        if self.transform is not None:
+        if self.transform:
             imgs = self.transform(imgs)
             labels = int(labels)
 
@@ -71,8 +71,8 @@ def get_mnist_m(train,adp=False,size= 0 ):
 
     dataloader  = torch.utils.data.DataLoader(
         dataset=dataset_target,
-                batch_size= params.adp_batch_size if adp else params.batch_size,
-
+        batch_size= params.adp_batch_size if adp else params.batch_size,
+        num_workers = 4,
         shuffle=True,
         drop_last=True)
     

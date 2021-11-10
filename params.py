@@ -13,7 +13,7 @@ model_root = './'
 
 #dataset root
 mnist_dataset_root = data_root
-mnist_m_dataset_root = './mnist_m'
+mnist_m_dataset_root = '/root/jchlwogur/pytorch_adda_mixup/mnist_m'
 usps_dataset_root = data_root+'/usps'
 svhn_dataset_root = data_root+'/svhn'
 custom_dataset_root = data_root+'/custom/'

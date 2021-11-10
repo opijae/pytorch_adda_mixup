@@ -36,7 +36,7 @@ if __name__ == '__main__':
     # source_cnn = pretrain1.train_src(source_cnn, src_data_loader, src_data_loader_eval)
     # source_cnn = pretrain.train_src(source_cnn, src_data_loader)
     # source_cnn = mixup.train_src(source_cnn, src_data_loader,tgt_data_loader,src_data_loader_eval)        
-    source_cnn.load_state_dict(torch.load(f"weights/mnist_pretrain_mnist_m_bg.pt"))
+    source_cnn.load_state_dict(torch.load(f"weights/mnist_pretrain.pt"))
 
     print('eval_test')
     print(f"Pretrained src model({params.src_dataset}) -> tgt dataset({params.tgt_dataset})")
@@ -47,7 +47,7 @@ if __name__ == '__main__':
     # tgt_encoder = mixup.train_tgt(source_cnn, target_cnn, discriminator,
     #                         src_data_loader,tgt_data_loader,tgt_data_loader_eval)
     tgt_encoder = adapt.train_tgt(source_cnn, target_cnn, discriminator,
-                            src_data_loader,tgt_data_loader)
+                            src_data_loader,tgt_data_loader,tgt_data_loader_eval)
 
 
 

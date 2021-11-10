@@ -1,16 +1,16 @@
 import os
-
+import numpy as np
 import torch
 import torch.optim as optim
 from torch import nn
-from core import test
+from core import test, pretrain1
 import params
-from utils import make_cuda, mixup_data
-
+from utils import make_cuda, mixup_data, save_model
+from tqdm import tqdm
 
 
 def train_tgt(source_cnn, target_cnn, critic,
-              src_data_loader, tgt_data_loader):
+              src_data_loader, tgt_data_loader, tgt_data_loader_eval):
     """Train encoder for target domain."""
     ####################
     # 1. setup network #
@@ -41,18 +41,24 @@ def train_tgt(source_cnn, target_cnn, critic,
     # 2. train network #
     ####################
     len_data_loader = min(len(src_data_loader), len(tgt_data_loader))
-
+    val_acc = np.inf
     for epoch in range(params.num_epochs):
         # zip source and target data pair
-        data_zip = enumerate(zip(src_data_loader, tgt_data_loader))
-        for step, ((images_src, _), (images_tgt, _)) in data_zip:
+        # data_zip = enumerate(zip(src_data_loader, tgt_data_loader))
+        print(f"Start Train Epoch {epoch + 1}")
+        tqdm_dataset = tqdm(enumerate(zip(src_data_loader, tgt_data_loader)))
+
+        general_loss_value = 0
+        discrimiator_loss_value = 0
+        matches = 0
+
+        for step, ((images_src, _), (images_tgt, _)) in tqdm_dataset:
 
             # make images variable
             images_src = make_cuda(images_src)
             images_tgt = make_cuda(images_tgt)
-
-
-
+            # print(images_src.shape)
+            # print(images_tgt.shape)
 
             ###########################
             # 2.1 train discriminator #
@@ -78,11 +84,16 @@ def train_tgt(source_cnn, target_cnn, critic,
             loss_critic = criterion(pred_concat, label_concat)
             loss_critic.backward()
 
+            general_loss_value += loss_critic.item()
+            general_loss_value /= (step + 1)
+
+
             # optimize critic
             optimizer_critic.step()
 
             pred_cls = torch.squeeze(pred_concat.max(1)[1])
-            acc = (pred_cls == label_concat).float().mean()
+            # matches += (pred_cls == label_concat).float().mean()
+            matches += (pred_cls == label_concat).sum().item()
 
 
             ############################
@@ -108,20 +119,33 @@ def train_tgt(source_cnn, target_cnn, critic,
 
             # optimize target encoder
             optimizer_tgt.step()
+
+            # preds = torch.argmas= labels).sum().item()
+            # matches /= (step + 1)
+
+            discrimiator_loss_value += loss_tgt.item()
+            discrimiator_loss_value /= (step + 1)
+
+
             #######################
             # 2.3 print step info #
             #######################
-            if ((epoch % 10 ==0 )&((step + 1) %  len_data_loader== 0)):
-                print("Epoch [{}/{}] Step [{}/{}]:"
-                      "d_loss={:.5f} g_loss={:.5f} acc={:.5f}"
-                      .format(epoch,
-                              params.num_epochs,
-                              step + 1,
-                              len_data_loader,
-                              loss_critic.item(),
-                              loss_tgt.item(),
-                              acc.item()))
+            tqdm_dataset.set_postfix({
+                'Epoch': epoch + 1,
+                'Iter' : step + 1,
+                'General_Loss' : general_loss_value,
+                'Discriminator_Loss' : discrimiator_loss_value,
+                'ACC'  : matches / params.batch_size / 2 / (step + 1)
+            })
 
+
+        print("Start Validation")
+        val_loss_value = pretrain1.eval(target_cnn, tgt_data_loader_eval)
+
+        if val_acc > val_loss_value:
+            val_acc = val_loss_value            
+            save_model(target_cnn, f"weights/{params.src_dataset}_adapt_{params.src_dataset}2{params.tgt_dataset}.pt")
+        print()
 
     torch.save(critic.state_dict(), os.path.join(
         params.model_root,

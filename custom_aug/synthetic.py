@@ -4,7 +4,7 @@ import random
 from glob import glob
 
 
-mnist_m_bg = glob('/root/jchlwogur/pytorch_adda_mixup/mnist_m/filled_bg/*')
+mnist_m_bg = glob('/root/jchlwogur/pytorch_adda_mixup/cluster_bg/*')[:1000]
 
 class Synthetic(object):
     """
