@@ -43,8 +43,7 @@ def train_tgt(source_cnn, target_cnn, critic,
     len_data_loader = min(len(src_data_loader), len(tgt_data_loader))
     val_acc = np.inf
     for epoch in range(params.num_epochs):
-        # zip source and target data pair
-        # data_zip = enumerate(zip(src_data_loader, tgt_data_loader))
+
         print(f"Start Train Epoch {epoch + 1}")
         tqdm_dataset = tqdm(enumerate(zip(src_data_loader, tgt_data_loader)))
 
@@ -57,8 +56,6 @@ def train_tgt(source_cnn, target_cnn, critic,
             # make images variable
             images_src = make_cuda(images_src)
             images_tgt = make_cuda(images_tgt)
-            # print(images_src.shape)
-            # print(images_tgt.shape)
 
             ###########################
             # 2.1 train discriminator #
@@ -91,6 +88,7 @@ def train_tgt(source_cnn, target_cnn, critic,
             # optimize critic
             optimizer_critic.step()
 
+            # 여기서 정확도 재는거 domain 정확도 아닌가? acc가 0.5로 나와야되고
             pred_cls = torch.squeeze(pred_concat.max(1)[1])
             # matches += (pred_cls == label_concat).float().mean()
             matches += (pred_cls == label_concat).sum().item()
@@ -127,9 +125,7 @@ def train_tgt(source_cnn, target_cnn, critic,
             discrimiator_loss_value /= (step + 1)
 
 
-            #######################
-            # 2.3 print step info #
-            #######################
+
             tqdm_dataset.set_postfix({
                 'Epoch': epoch + 1,
                 'Iter' : step + 1,
@@ -140,17 +136,17 @@ def train_tgt(source_cnn, target_cnn, critic,
 
 
         print("Start Validation")
-        val_loss_value = pretrain1.eval(target_cnn, tgt_data_loader_eval)
+        val_loss_value = pretrain1.eval(target_cnn, 0)
 
         if val_acc > val_loss_value:
             val_acc = val_loss_value            
-            save_model(target_cnn, f"weights/{params.src_dataset}_adapt_{params.src_dataset}2{params.tgt_dataset}.pt")
+            save_model(target_cnn, f"weights/{params.src_dataset}_adapt_{params.src_dataset}2{params.tgt_dataset}_{params.exp_name}.pt")
         print()
 
-    torch.save(critic.state_dict(), os.path.join(
-        params.model_root,
-        "ADDA-critic-final.pt"))
-    torch.save(target_cnn.state_dict(), os.path.join(
-        params.model_root,
-        "ADDA-target_cnn-final.pt"))
+    # torch.save(critic.state_dict(), os.path.join(
+    #     params.model_root,
+    #     "ADDA-critic-final.pt"))
+    # torch.save(target_cnn.state_dict(), os.path.join(
+    #     params.model_root,
+    #     "ADDA-target_cnn-final.pt"))
     return target_cnn

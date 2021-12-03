@@ -11,9 +11,20 @@ model_root = './'
 # params for target dataset
 # 'mnist_m', 'usps', 'svhn' "custom"
 
+
+exp_name = ''
+# exp_name ='usps->mnist'
+exp_name ='mnist -> mnist_m'
+
+pretrain = True
+domain_shuffle = True
+
+
+if domain_shuffle : exp_name += '_domain shuffle'
 #dataset root
 mnist_dataset_root = data_root
 mnist_m_dataset_root = '/root/jchlwogur/pytorch_adda_mixup/mnist_m'
+# usps_dataset_root = '/root/jchlwogur/pytorch_adda_mixup/usps_mnist'
 usps_dataset_root = data_root+'/usps'
 svhn_dataset_root = data_root+'/svhn'
 custom_dataset_root = data_root+'/custom/'

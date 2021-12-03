@@ -1,54 +1,38 @@
-
-
 import torch
 from torchvision import datasets, transforms
 import torch.utils.data as data_utils
 
 
-from custom_aug import Synthetic
+from custom_aug import Synthetic, Synthetic1
 import params
 
 
-def get_mnist(train,adp = False,size = 0):
+def get_mnist(train,adp = False,size = 0,tgt=None):
     """Get MNIST dataset loader."""
     # image pre-processing
-    pre_process = transforms.Compose([
+
+    transform_list = [
         transforms.Resize(params.image_size),
-        Synthetic(),
         transforms.ToTensor(),
-#    transforms.Normalize((0.5),(0.5)),
-        #    transforms.Lambda(lambda x: x.repeat(3, 1, 1)),
+    ]
+
+    if params.domain_shuffle:
+        transform_list.insert(1,Synthetic())
+    else:
+        transform_list.append(transforms.Lambda(lambda x: x.repeat(3, 1, 1)))
 
 
-   ])
-                                  
+    pre_process = transforms.Compose(transform_list)                                 
 
 
 
     # dataset and data loader
     mnist_dataset = datasets.MNIST(root=params.mnist_dataset_root,
                                    train=train,
-                                   transform=pre_process,
-                                   
+                                   transform=pre_process,                                   
                                    download=True)
     if train:
-        # perm = torch.randperm(len(mnist_dataset))
-        # indices = perm[:10000]
         mnist_dataset,_ = data_utils.random_split(mnist_dataset, [size,len(mnist_dataset)-size])
-        # size = len(mnist_dataset)
-        # train, valid = data_utils.random_split(mnist_dataset,[size-int(size*params.train_val_ratio),int(size*params.train_val_ratio)])
-        # train_loader = torch.utils.data.DataLoader(
-        # dataset=train,
-        # batch_size= params.adp_batch_size if adp else params.batch_size,
-        # shuffle=True,
-        # drop_last=True)
-        # valid_loader = torch.utils.data.DataLoader(
-        # dataset=valid,
-        # batch_size= params.adp_batch_size if adp else params.batch_size,
-        # shuffle=True,
-        # drop_last=True)
-
-        # return train_loader,valid_loader
 
     mnist_data_loader = torch.utils.data.DataLoader(
         dataset=mnist_dataset,

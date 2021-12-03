@@ -40,7 +40,7 @@ class GetLoader(data.Dataset):
         return self.n_data
 
 
-def get_mnist_m(train,adp=False,size= 0 ):
+def get_mnist_m(train,adp=False,size= 0,tgt =None):
 
     if train == True:
         mode = 'train'
@@ -51,13 +51,8 @@ def get_mnist_m(train,adp=False,size= 0 ):
         # image pre-processing
     pre_process = transforms.Compose([
         transforms.Resize(params.image_size),
-    # transforms.Grayscale(3),
-
-                                      transforms.ToTensor(),                                     
-
-#    transforms.Normalize((0.5, 0.5, 0.5), (0.5, 0.5, 0.5)),
-#    transforms.Grayscale(1),
-   ]
+        transforms.ToTensor(),
+    ]
    )
 
     dataset_target = GetLoader(

@@ -9,6 +9,17 @@ import numpy as np
 import itertools
 import torch.nn.functional as F
 import params
+import cv2
+
+
+def save_tensor_img_with_label(data, name):
+    """
+        inputs : batch data
+    """
+    img = data[0][0]*255
+    img = img.permute(1,2,0).numpy()
+    cv2.imwrite(f'{name}_{data[1][0]}.jpg',img)
+
 
 def make_cuda(tensor):
     """Use CUDA if it's available."""
@@ -52,18 +63,18 @@ def init_random_seed(manual_seed):
         torch.cuda.manual_seed_all(seed)
 
 
-def get_data_loader(name,train=True,adp=False,size = 0):
+def get_data_loader(name,train=True,adp=False,size = 0,tgt=None):
     """Get data loader by name."""
     if name == "mnist":
-        return get_mnist(train,adp,size)
+        return get_mnist(train,adp,size,tgt)
     elif name == "mnist_m":
-        return get_mnist_m(train,adp,size)
+        return get_mnist_m(train,adp,size,tgt)
     elif name == "usps":
-        return get_usps(train,adp,size)
+        return get_usps(train,adp,size,tgt)
     elif name == "svhn":
-        return get_svhn(train,adp,size)
+        return get_svhn(train,adp,size,tgt)
     elif name == "custom":
-        return get_custom(train,adp,size)
+        return get_custom(train,adp,size,tgt)
 
 def init_model(net, restore=None):
     """Init models with cuda and weights."""
