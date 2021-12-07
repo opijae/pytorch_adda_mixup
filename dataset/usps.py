@@ -51,7 +51,7 @@ def get_usps(train,adp=False,size=0,tgt=None):
     ]
 
     # dataset and data loader
-    if train and params.domain_shuffle:
+    if train and params.domain_shuffle and params.tgt_dataset != 'usps':
         pre_process = transforms.Compose(transform_list)
         usps_dataset = GetLoader(params.usps_dataset_root, '/root/jchlwogur/pytorch_adda_mixup/usps_train.txt',pre_process)
     else:

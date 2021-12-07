@@ -67,7 +67,7 @@ def get_mnist_m(train,adp=False,size= 0,tgt =None):
     dataloader  = torch.utils.data.DataLoader(
         dataset=dataset_target,
         batch_size= params.adp_batch_size if adp else params.batch_size,
-        num_workers = 4,
+        num_workers = 8,
         shuffle=True,
         drop_last=True)
     
